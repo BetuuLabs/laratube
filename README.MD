@@ -1,4 +1,4 @@
-# LaraTube - YouTube Video Manage
+# LaraTube - Manage your Youtube chanel with Laravel
 
 **Please note, that this package will only work with a single YouTube account and does not support multiple accounts.**
 
