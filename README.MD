@@ -24,7 +24,7 @@ And also add the alias to the same file.
 ```php
 'aliases' => [
     ...
-    'Youtube' => Betuulabs\Laratube\Facades\Laratube::class,
+    'Laratube' => Betuulabs\Laratube\Facades\Laratube::class,
 ],
 ```
 
