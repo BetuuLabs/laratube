@@ -143,6 +143,94 @@ class Laratube
     }
 
     /**
+     * Update the video on YouTube
+     *
+     * @param  string $id
+     * @param  array $data
+     * @param  string $privacyStatus
+     * @return self
+     * @throws Exception
+     */
+    public function update($id, array $data = [], $privacyStatus = 'public')
+    {
+        $this->handleAccessToken();
+        if (!$this->exists($id)) {
+            throw new Exception('A video matching id "'. $id .'" could not be found.');
+        }
+        try {
+            $video = $this->getVideo($data, $privacyStatus, $id);
+            $status = $this->youtube->videos->update('status,snippet', $video);
+            // Set ID of the Updated Video
+            $this->videoId = $status['id'];
+            // Set the Snippet from Updated Video
+            $this->snippet = $status['snippet'];
+        }  catch (\Google_Service_Exception $e) {
+            throw new Exception($e->getMessage());
+        } catch (\Google_Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+        return $this;
+    }
+
+    /**
+     * Set a Custom Thumbnail for the Upload
+     *
+     * @param  string $imagePath
+     * @return self
+     * @throws Exception
+     */
+    public function setThumbnail($imagePath)
+    {
+        try {
+            $videoId = $this->getVideoId();
+            $chunkSizeBytes = 1 * 1024 * 1024;
+            $this->client->setDefer(true);
+            $setRequest = $this->youtube->thumbnails->set($videoId);
+            $media = new \Google_Http_MediaFileUpload(
+                $this->client,
+                $setRequest,
+                'image/png',
+                null,
+                true,
+                $chunkSizeBytes
+            );
+            $media->setFileSize(filesize($imagePath));
+            $status = false;
+            $handle = fopen($imagePath, "rb");
+            while (!$status && !feof($handle)) {
+                $chunk  = fread($handle, $chunkSizeBytes);
+                $status = $media->nextChunk($chunk);
+            }
+            fclose($handle);
+            $this->client->setDefer(false);
+            $this->thumbnailUrl = $status['items'][0]['default']['url'];
+        } catch (\Google_Service_Exception $e) {
+            throw new Exception($e->getMessage());
+        } catch (\Google_Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+        return $this;
+    }
+
+    /**
+     * Delete a YouTube video by it's ID.
+     *
+     * @param  int $id
+     * @return bool
+     * @throws Exception
+     */
+    public function delete($id)
+    {
+        $this->handleAccessToken();
+        if (!$this->exists($id)) {
+            throw new Exception('A video matching id "'. $id .'" could not be found.');
+        }
+        return $this->youtube->videos->delete($id);
+    }
+
+
+
+    /**
      * @param $data
      * @param $privacyStatus
      * @param null $id
