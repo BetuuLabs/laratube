@@ -1,0 +1,43 @@
+{
+    "name": "betuulabs/laratube",
+    "description": "Manage YouTube Chanel with Laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "betuulabs",
+            "email": "betuulabs@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.0",
+        "illuminate/support": "^5.4",
+        "google/apiclient": "^2.2",
+        "nesbot/carbon": "^1.22"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.2",
+        "phpunit/phpunit": "~5.0",
+        "phpunit/phpcov": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Betuulabs\\Laratube\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Betuulabs\\Laratube\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Betuulabs\\Laratube\\LaratubeServiceProvider"
+            ],
+            "aliases": {
+                "Laratube": "Betuulabs\\Laratube\\Facades\\Laratube"
+            }
+        }
+    }
+}
